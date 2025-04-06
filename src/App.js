@@ -1,23 +1,52 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
 
 function App() {
+  const [count, setCount] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
+  const [intervalId, setIntervalId] = useState(null);
+
+  const toggleCounter = () => {
+    if (isRunning) {
+      clearInterval(intervalId);
+    } else {
+      const id = setInterval(() => {
+        setCount((prevCount) => prevCount + 1);
+      }, 1000);
+      setIntervalId(id);
+    }
+    setIsRunning(!isRunning);
+  };
+
+  const resetCounter = () => {
+    clearInterval(intervalId);
+    setCount(0);
+    setIsRunning(false);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [intervalId]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ textAlign: "center", marginTop: "20px" }}>
+      <h1>Counter Application</h1>
+      <p style={{ fontSize: "48px" }}>{count}</p>
+      <button
+        onClick={toggleCounter}
+        style={{ padding: "10px 20px", margin: "10px", cursor: "pointer" }}
+      >
+        {isRunning ? "Stop" : "Start"}
+      </button>
+      <button
+        onClick={resetCounter}
+        style={{ padding: "10px 20px", margin: "10px", cursor: "pointer" }}
+      >
+        Reset
+      </button>
     </div>
   );
 }
